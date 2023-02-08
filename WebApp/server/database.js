@@ -124,51 +124,25 @@ const getAllProperties = function(options, limit = 10) {
     queryString += `WHERE properties.owner_id = $${queryParams.length} `;
   }
 
+  if (options.minimum_price_per_night) {
+    const minPrice = parseInt(options.minimum_price_per_night) * 100
+    queryParams.push(`${minPrice}`);
+    queryString += `WHERE properties.cost_per_night >= $${queryParams.length} `;
+  }
 
+  if (options.maximum_price_per_night) {
+    const maxPrice = parseInt(options.maximum_price_per_night) * 100
+    queryParams.push(`${maxPrice}`);
+    queryString += (options.minimum_price_per_night ? "AND": "WHERE") + ` properties.cost_per_night <= $${queryParams.length} `;
+  }
 
-  // if (options.minimum_price_per_night) {
-  //   const minPrice = parseInt(options.minimum_price_per_night) * 100
-  //   queryParams.push(`${minPrice}`);
-  //   queryString += `WHERE properties.cost_per_night >= $${queryParams.length} `;
-  // }
-
-  // if (options.maximum_price_per_night) {
-  //   const maxPrice = parseInt(options.maximum_price_per_night) * 100
-  //   queryParams.push(`${maxPrice}`);
-  //   queryString += `WHERE properties.cost_per_night <= $${queryParams.length} `;
-  // }
-  // CREATE TABLE properties (
-  //   id SERIAL PRIMARY KEY NOT NULL,
-  //   owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  
-  //   title VARCHAR(255) NOT NULL,
-  //   description TEXT,
-  //   thumbnail_photo_url VARCHAR(255) NOT NULL,
-  //   cover_photo_url VARCHAR(255) NOT NULL,
-  //   cost_per_night INTEGER  NOT NULL DEFAULT 0,
-  //   parking_spaces INTEGER  NOT NULL DEFAULT 0,
-  //   number_of_bathrooms INTEGER  NOT NULL DEFAULT 0,
-  //   number_of_bedrooms INTEGER  NOT NULL DEFAULT 0,
-  
-  //   country VARCHAR(255) NOT NULL,
-  //   street VARCHAR(255) NOT NULL,
-  //   city VARCHAR(255) NOT NULL,
-  //   province VARCHAR(255) NOT NULL,
-  //   post_code VARCHAR(255) NOT NULL,
-  
-  //   active BOOLEAN NOT NULL DEFAULT TRUE
-  // );
-  
-  //
-  // 4
-  
   queryString += `GROUP BY properties.id `
 
   if (options.minimum_rating) {
     queryParams.push(`${options.minimum_rating}`);
     queryString += `HAVING (avg(property_reviews.rating) >= $${queryParams.length}) `;
   }
-  
+
   queryParams.push(limit);
   queryString += `ORDER BY cost_per_night
   LIMIT $${queryParams.length};
