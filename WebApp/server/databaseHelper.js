@@ -164,20 +164,11 @@ const getAllProperties = function(options, limit = 10) {
   console.log(queryString, queryParams);
 
   // 6
-  return db.query(queryString, queryParams, (err, res) => {
-    if(err) {
-      console.log(err.message)
-      return
-    }
-
-    return res.rows
-  })
-
-  // return db.query(queryString, queryParams)
-  //   .then((res) => res.rows)
-  //   .catch((err) => {
-  //     console.log(err.message);
-  //   });;
+  return db.query(queryString, queryParams)
+    .then((res) => res.rows)
+    .catch((err) => {
+      console.log(err.message);
+    });;
 }
 exports.getAllProperties = getAllProperties;
 
