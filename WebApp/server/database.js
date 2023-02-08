@@ -121,19 +121,19 @@ const getAllProperties = function(options, limit = 10) {
 
   if (options.owner_id) {
     queryParams.push(`${options.owner_id}`);
-    queryString += `WHERE properties.owner_id = $${queryParams.length} `;
+    queryString += ((options.city) ? "AND": "WHERE") + ` properties.owner_id = $${queryParams.length} `;
   }
 
   if (options.minimum_price_per_night) {
     const minPrice = parseInt(options.minimum_price_per_night) * 100
     queryParams.push(`${minPrice}`);
-    queryString += `WHERE properties.cost_per_night >= $${queryParams.length} `;
+    queryString += ((options.owner_id || options.city) ? "AND": "WHERE") + ` properties.cost_per_night >= $${queryParams.length} `;
   }
 
   if (options.maximum_price_per_night) {
     const maxPrice = parseInt(options.maximum_price_per_night) * 100
     queryParams.push(`${maxPrice}`);
-    queryString += (options.minimum_price_per_night ? "AND": "WHERE") + ` properties.cost_per_night <= $${queryParams.length} `;
+    queryString += ((options.minimum_price_per_night || options.owner_id || options.city) ? "AND": "WHERE") + ` properties.cost_per_night <= $${queryParams.length} `;
   }
 
   queryString += `GROUP BY properties.id `
