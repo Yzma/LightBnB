@@ -4,7 +4,7 @@ $(() => {
 
   window.views_manager = {};
 
-  window.views_manager.show = function(item, otherData = null) {
+  window.views_manager.show = function(item) {
     $newPropertyForm.detach();
     $propertyListings.detach();
     $searchPropertyForm.detach();
@@ -29,6 +29,9 @@ $(() => {
         $signUpForm.appendTo($main);
         break;
       case 'newReservation':
+        $newReservationForm.find('#reservation-title').html(`Property ID: ${window.currentPropertyID}`)
+        $newReservationForm.find('#property_id').val(`Title: ${window.currentPropertyID}`)
+        $newReservationForm.find('#user_id').val(`Title: ${window.currentPropertyID}`)
         $newReservationForm.appendTo($main);
         break;
       case 'error': {
